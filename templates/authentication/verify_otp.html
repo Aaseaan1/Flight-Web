@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Verify OTP - AASEAANIC{% endblock %}
+
+{% block content %}
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7">
+                <div class="auth-card">
+                    <div class="auth-header text-center mb-4">
+                        <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
+                        <h2 class="h3 fw-bold">Verify Your Email</h2>
+                        <p class="text-muted">We've sent a 6-digit code to your email address</p>
+                    </div>
+                    
+                    <form method="post" class="auth-form" id="otpForm">
+                        {% csrf_token %}
+                        
+                        <div class="form-group mb-4">
+                            <label class="form-label text-center d-block">
+                                <i class="fas fa-key"></i> Enter Verification Code
+                            </label>
+                            <input type="text" class="form-control text-center" id="otp_code" name="otp_code" 
+                                   placeholder="Enter 6-digit code" maxlength="6" required autofocus>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-check"></i> Verify Email
+                        </button>
+                        
+                        <div class="text-center">
+                            <p class="mb-2">Didn't receive the code?</p>
+                            <button type="button" class="btn btn-link text-primary p-0" id="resendOtp">
+                                <i class="fas fa-redo"></i> Resend Code
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <div class="alert alert-info mt-3">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Note:</strong> The verification code expires in 10 minutes.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-format OTP input
+document.getElementById('otp_code').addEventListener('input', function(e) {
+    let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+    e.target.value = value;
+});
+
+// Resend OTP functionality
+document.getElementById('resendOtp').addEventListener('click', function() {
+    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+    this.disabled = true;
+    
+    // Simulate resend (in real app, make AJAX call)
+    setTimeout(() => {
+        this.innerHTML = '<i class="fas fa-redo"></i> Code Sent!';
+        showAlert('Verification code has been resent to your email.', 'success');
+        
+        setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-redo"></i> Resend Code';
+            this.disabled = false;
+        }, 3000);
+    }, 2000);
+});
+
+// Add loading state to verify button
+document.getElementById('otpForm').addEventListener('submit', function() {
+    const submitBtn = this.querySelector('button[type="submit"]');
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying...';
+    submitBtn.disabled = true;
+});
+</script>
+{% endblock %}

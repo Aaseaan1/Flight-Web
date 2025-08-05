@@ -1,0 +1,705 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AASEAANIC - Love at First Flight | Book Your Perfect Journey{% endblock %}
+
+{% block description %}Discover the world with AASEAANIC. Book flights to your dream destinations with our easy-to-use platform. Best prices, top airlines, excellent service.{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="hero-content">
+                    <h1 class="hero-title">Love at First Flight</h1>
+                    <p class="hero-subtitle">Discover the world with AASEAANIC. Book your dream destination today and experience seamless travel like never before.</p>
+                    <div class="hero-cta">
+                        <a href="#search-section" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-search"></i> Find Flights
+                        </a>
+                        <a href="{% url 'core:destinations' %}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-globe"></i> Explore Destinations
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Flight Search Form -->
+                <div class="search-form" id="search-section">
+                    <form method="get" action="{% url 'flights:search_results' %}" id="flightSearchForm">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="trip_type" id="oneWay" value="one_way" checked onchange="toggleTripType()">
+                                            <label class="form-check-label" for="oneWay">
+                                                <i class="fas fa-arrow-right"></i> One Way
+                                            </label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="trip_type" id="roundTrip" value="round_trip" onchange="toggleTripType()">
+                                            <label class="form-check-label" for="roundTrip">
+                                                <i class="fas fa-exchange-alt"></i> Round Trip
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <label for="departure" class="form-label">
+                                    <i class="fas fa-plane-departure"></i> From
+                                </label>
+                                <input type="text" class="form-control airport-search" id="departure" name="departure" placeholder="Departure City" required>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <label for="destination" class="form-label">
+                                    <i class="fas fa-plane-arrival"></i> To
+                                </label>
+                                <input type="text" class="form-control airport-search" id="destination" name="destination" placeholder="Destination City" required>
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label for="departure_date" class="form-label">
+                                    <i class="fas fa-calendar"></i> Departure
+                                </label>
+                                <input type="date" class="form-control" id="departure_date" name="departure_date" required>
+                            </div>
+                            
+                            <div class="col-md-2" id="returnDateGroup" style="display: none;">
+                                <label for="return_date" class="form-label">
+                                    <i class="fas fa-calendar"></i> Return
+                                </label>
+                                <input type="date" class="form-control" id="return_date" name="return_date">
+                            </div>
+                            
+                            <div class="col-md-2">
+                                <label for="passengers" class="form-label">
+                                    <i class="fas fa-users"></i> Passengers
+                                </label>
+                                <select class="form-control" id="passengers" name="passengers">
+                                    <option value="1">1 Passenger</option>
+                                    <option value="2">2 Passengers</option>
+                                    <option value="3">3 Passengers</option>
+                                    <option value="4">4 Passengers</option>
+                                    <option value="5">5+ Passengers</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                    <i class="fas fa-search"></i> Search Flights
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Special Announcement Banner -->
+<section class="announcement-banner">
+    <div class="container">
+        <div class="announcement-content">
+            <i class="fas fa-gift text-warning me-2"></i>
+            <span class="fw-bold">50% Off! Cargo upto 5kg. Write #RakshaBandhanGifts to claim (Aug 5-9).</span>
+            <button class="btn btn-sm btn-outline-light ms-3">Learn More</button>
+        </div>
+    </div>
+</section>
+
+<!-- Mountain Flights Section -->
+<section class="mountain-flights py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="mountain-content">
+                    <h2 class="display-4 fw-bold mb-4">Mountain Flights</h2>
+                    <p class="lead mb-4">Fly to the top of the world on our mountain flight. The flight seeing tour takes you close to the highest peaks in Nepal</p>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="mountain-card">
+                                <h5 class="fw-bold">Everest Experience</h5>
+                                <p class="text-muted mb-3">Witness the majestic Mount Everest up close</p>
+                                <a href="{% url 'flights:search' %}" class="btn btn-primary btn-sm">Explore More</a>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mountain-card">
+                                <h5 class="fw-bold">Annapurna Experience</h5>
+                                <p class="text-muted mb-3">Discover the beauty of Annapurna range</p>
+                                <a href="{% url 'flights:search' %}" class="btn btn-primary btn-sm">Explore More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mountain-image">
+                    <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&h=600&fit=crop" 
+                         alt="Mountain Flight" class="img-fluid rounded-3 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Exciting Offers -->
+<section class="offers-section py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Exciting Offers</h2>
+                <p class="lead">Don't miss out on these amazing deals</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="offer-card">
+                    <div class="offer-badge">
+                        <span class="badge bg-danger">Limited Time</span>
+                    </div>
+                    <div class="offer-content">
+                        <h5 class="fw-bold">Royal Club Special</h5>
+                        <p class="text-muted">Deals at Soaltee Hotels and Resorts for Royal Club Members</p>
+                        <a href="{% url 'core:destinations' %}" class="btn btn-outline-primary btn-sm">Learn More</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="offer-card">
+                    <div class="offer-badge">
+                        <span class="badge bg-success">Mobile App</span>
+                    </div>
+                    <div class="offer-content">
+                        <h5 class="fw-bold">Instant Discount</h5>
+                        <p class="text-muted">Get instant discount on all flight bookings through mobile app</p>
+                        <a href="{% url 'core:destinations' %}" class="btn btn-outline-primary btn-sm">Download App</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="offer-card">
+                    <div class="offer-badge">
+                        <span class="badge bg-warning">Expired</span>
+                    </div>
+                    <div class="offer-content">
+                        <h5 class="fw-bold">New Year 2082</h5>
+                        <p class="text-muted">Free Ticket Giveaway - New year 2082 celebration offer</p>
+                        <a href="{% url 'core:destinations' %}" class="btn btn-outline-secondary btn-sm">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'core:destinations' %}" class="btn btn-primary btn-lg">Explore All Offers</a>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Destinations -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="display-5 fw-bold text-gradient">Explore Destinations</h2>
+                <p class="lead">Discover amazing places around the world</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=800&h=600&fit=crop" alt="Paris" class="img-fluid">
+                    <div class="destination-overlay">
+                        <div>
+                            <h4 class="mb-1">Paris</h4>
+                            <p class="mb-0">France</p>
+                            <a href="{% url 'flights:search' %}" class="btn btn-primary btn-sm mt-2">
+                                <i class="fas fa-plane"></i> Book Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&h=600&fit=crop" alt="Tokyo" class="img-fluid">
+                    <div class="destination-overlay">
+                        <div>
+                            <h4 class="mb-1">Tokyo</h4>
+                            <p class="mb-0">Japan</p>
+                            <a href="{% url 'flights:search' %}" class="btn btn-primary btn-sm mt-2">
+                                <i class="fas fa-plane"></i> Book Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="destination-card">
+                    <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&h=600&fit=crop" alt="London" class="img-fluid">
+                    <div class="destination-overlay">
+                        <div>
+                            <h4 class="mb-1">London</h4>
+                            <p class="mb-0">United Kingdom</p>
+                            <a href="{% url 'flights:search' %}" class="btn btn-primary btn-sm mt-2">
+                                <i class="fas fa-plane"></i> Book Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'core:destinations' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-globe"></i> Explore All Packages
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Why Choose AASEAANIC?</h2>
+                <p class="lead">Experience the difference with our premium services</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 text-center border-0 shadow-sm feature-item">
+                    <div class="card-body py-5">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-dollar-sign fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Best Prices</h5>
+                        <p class="card-text">Get the most competitive prices on flights worldwide with our price match guarantee.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 text-center border-0 shadow-sm feature-item">
+                    <div class="card-body py-5">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-clock fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">24/7 Support</h5>
+                        <p class="card-text">Round-the-clock customer support to assist you with any travel needs or concerns.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 text-center border-0 shadow-sm feature-item">
+                    <div class="card-body py-5">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-shield-alt fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Secure Booking</h5>
+                        <p class="card-text">Your personal and payment information is protected with bank-level security.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="card h-100 text-center border-0 shadow-sm feature-item">
+                    <div class="card-body py-5">
+                        <div class="feature-icon mb-3">
+                            <i class="fas fa-mobile-alt fa-3x text-primary"></i>
+                        </div>
+                        <h5 class="card-title">Easy Booking</h5>
+                        <p class="card-text">Simple and intuitive booking process that works perfectly on all devices.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Airlines -->
+{% if featured_airlines %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Our Partner Airlines</h2>
+                <p class="lead">Fly with the world's leading airlines</p>
+            </div>
+        </div>
+        
+        <div class="row g-4 justify-content-center">
+            {% for airline in featured_airlines %}
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body text-center py-4">
+                        {% if airline.logo %}
+                            <img src="{{ airline.logo.url }}" alt="{{ airline.name }}" class="img-fluid mb-3" style="max-height: 60px;">
+                        {% else %}
+                            <i class="fas fa-plane fa-3x text-primary mb-3"></i>
+                        {% endif %}
+                        <h6 class="card-title">{{ airline.name }}</h6>
+                        <small class="text-muted">{{ airline.code }}</small>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Latest Updates & News -->
+<section class="news-section py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center mb-5">
+                <h2 class="display-5 fw-bold">Latest Updates</h2>
+                <p class="lead">Stay informed with our latest news and stories</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400&h=250&fit=crop" 
+                             alt="Travel Safety" class="img-fluid">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="fas fa-calendar-alt"></i> August 5, 2025
+                        </div>
+                        <h5 class="fw-bold">Enhanced Safety Protocols</h5>
+                        <p class="text-muted">We've implemented new safety measures to ensure your journey is secure and comfortable.</p>
+                        <a href="{% url 'core:about' %}" class="btn btn-outline-primary btn-sm">Read More</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1542296332-2e4473faf563?w=400&h=250&fit=crop" 
+                             alt="New Routes" class="img-fluid">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="fas fa-calendar-alt"></i> August 3, 2025
+                        </div>
+                        <h5 class="fw-bold">New International Routes</h5>
+                        <p class="text-muted">Exciting new destinations added to our network. Explore more places with AASEAANIC.</p>
+                        <a href="{% url 'core:destinations' %}" class="btn btn-outline-primary btn-sm">Explore Routes</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="news-card">
+                    <div class="news-image">
+                        <img src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400&h=250&fit=crop" 
+                             alt="Mobile App" class="img-fluid">
+                    </div>
+                    <div class="news-content">
+                        <div class="news-date">
+                            <i class="fas fa-calendar-alt"></i> August 1, 2025
+                        </div>
+                        <h5 class="fw-bold">Mobile App Launch</h5>
+                        <p class="text-muted">Download our new mobile app for easier booking and exclusive mobile-only deals.</p>
+                        <a href="#" class="btn btn-outline-primary btn-sm">Download App</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'core:about' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-newspaper"></i> Explore All News & Stories
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Royal Club Section -->
+<section class="royal-club py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <div class="royal-club-content">
+                    <h2 class="display-4 fw-bold mb-4 text-gradient">Royal Club</h2>
+                    <p class="lead mb-4">Join our exclusive loyalty program and enjoy premium benefits, priority boarding, and special discounts.</p>
+                    
+                    <div class="benefits-list mb-4">
+                        <div class="benefit-item">
+                            <i class="fas fa-crown text-warning me-3"></i>
+                            <span>Priority boarding and check-in</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-gift text-warning me-3"></i>
+                            <span>Exclusive member discounts</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-star text-warning me-3"></i>
+                            <span>Earn points on every booking</span>
+                        </div>
+                        <div class="benefit-item">
+                            <i class="fas fa-headset text-warning me-3"></i>
+                            <span>Dedicated customer support</span>
+                        </div>
+                    </div>
+                    
+                    <div class="royal-club-actions">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'dashboard:user_dashboard' %}" class="btn btn-warning btn-lg me-3">
+                                <i class="fas fa-crown"></i> Royal Club Dashboard
+                            </a>
+                        {% else %}
+                            <a href="{% url 'authentication:signup' %}" class="btn btn-warning btn-lg me-3">
+                                <i class="fas fa-crown"></i> Join Royal Club
+                            </a>
+                        {% endif %}
+                        <a href="{% url 'authentication:login' %}" class="btn btn-outline-warning btn-lg">
+                            <i class="fas fa-sign-in-alt"></i> Royal Club Login
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="royal-club-image">
+                    <img src="https://images.unsplash.com/photo-1556388158-158ea5ccacbd?w=800&h=600&fit=crop" 
+                         alt="Royal Club" class="img-fluid rounded-3 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="display-5 fw-bold mb-4">Ready for Your Next Adventure?</h2>
+                <p class="lead mb-4">Join thousands of satisfied travelers who trust AASEAANIC for their journey needs.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'flights:search' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-search"></i> Search Flights
+                    </a>
+                    {% if not user.is_authenticated %}
+                    <a href="{% url 'authentication:signup' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-user-plus"></i> Sign Up Today
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Trip type toggle functionality
+    function toggleTripType() {
+        const oneWay = document.getElementById('oneWay').checked;
+        const returnDateGroup = document.getElementById('returnDateGroup');
+        
+        if (oneWay) {
+            returnDateGroup.style.display = 'none';
+            document.getElementById('return_date').required = false;
+        } else {
+            returnDateGroup.style.display = 'block';
+            document.getElementById('return_date').required = true;
+        }
+    }
+    
+    // Set minimum date to today
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('departure_date').min = today;
+        document.getElementById('return_date').min = today;
+        
+        // Set default departure date to today
+        document.getElementById('departure_date').value = today;
+        
+        // Initialize animations
+        initializeAnimations();
+        
+        // Initialize scroll effects
+        initializeScrollEffects();
+        
+        // Initialize offer interactions
+        initializeOfferInteractions();
+    });
+    
+    // Initialize animations for cards
+    function initializeAnimations() {
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-up');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all cards
+        document.querySelectorAll('.destination-card, .offer-card, .news-card, .mountain-card, .feature-item').forEach(card => {
+            observer.observe(card);
+        });
+    }
+    
+    // Initialize scroll effects
+    function initializeScrollEffects() {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.royal-club');
+            
+            if (parallax) {
+                const speed = scrolled * 0.2;
+                parallax.style.transform = `translateY(${speed}px)`;
+            }
+        });
+    }
+    
+    // Initialize offer interactions
+    function initializeOfferInteractions() {
+        // Offer card hover effects
+        document.querySelectorAll('.offer-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+        
+        // News card interactions
+        document.querySelectorAll('.news-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const link = this.querySelector('a');
+                if (link) {
+                    window.location.href = link.href;
+                }
+            });
+        });
+        
+        // Destination card interactions
+        document.querySelectorAll('.destination-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.querySelector('.destination-overlay').style.opacity = '1';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.querySelector('.destination-overlay').style.opacity = '0';
+            });
+        });
+    }
+    
+    // Royal Club benefits animation
+    function animateRoyalBenefits() {
+        const benefits = document.querySelectorAll('.benefit-item');
+        benefits.forEach((benefit, index) => {
+            setTimeout(() => {
+                benefit.style.opacity = '1';
+                benefit.style.transform = 'translateX(0)';
+            }, index * 200);
+        });
+    }
+    
+    // Mountain flight card interactions
+    document.querySelectorAll('.mountain-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px) rotate(1deg)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) rotate(0deg)';
+        });
+    });
+    
+    // Enhanced flight search form
+    document.getElementById('flightSearchForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Add loading state
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+        submitBtn.disabled = true;
+        
+        // Simulate search delay
+        setTimeout(() => {
+            this.submit();
+        }, 1000);
+    });
+    
+    // Announcement banner dismiss
+    function dismissAnnouncement() {
+        const banner = document.querySelector('.announcement-banner');
+        if (banner) {
+            banner.style.animation = 'slideUp 0.5s ease-out forwards';
+            setTimeout(() => {
+                banner.style.display = 'none';
+            }, 500);
+        }
+    }
+    
+    // Add slide up animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideUp {
+            from {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    // Auto-dismiss announcement after 10 seconds
+    setTimeout(() => {
+        dismissAnnouncement();
+    }, 10000);
+</script>
+{% endblock %}

@@ -1,0 +1,712 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Passenger Details - AASEAANIC{% endblock %}
+
+{% block content %}
+<!-- Booking Progress -->
+<section class="booking-progress py-3 bg-light">
+    <div class="container">
+        <div class="progress-steps">
+            <div class="step active">
+                <div class="step-number">1</div>
+                <div class="step-label">Passenger Details</div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-label">Seat Selection</div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-label">Payment</div>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-label">Confirmation</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Flight Summary -->
+<section class="flight-summary py-4 bg-white border-bottom">
+    <div class="container">
+        <div class="summary-card">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <div class="flight-info">
+                        <div class="route">
+                            <h5 class="mb-1">
+                                <i class="fas fa-plane me-2"></i>
+                                New York (JFK) → London (LHR)
+                            </h5>
+                            <p class="mb-0 text-muted">
+                                Monday, August 6, 2025 | British Airways BA 112 | 6h 55m
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 text-end">
+                    <div class="price-summary">
+                        <div class="total-price">$425</div>
+                        <small class="text-muted">per person</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Passenger Details Form -->
+<section class="passenger-details py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="details-form">
+                    <h3 class="mb-4">Passenger Information</h3>
+                    
+                    <form id="passengerForm" method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Adult Passenger 1 -->
+                        <div class="passenger-section">
+                            <div class="passenger-header">
+                                <h5>
+                                    <i class="fas fa-user"></i> Adult 1 (Main Contact)
+                                </h5>
+                            </div>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-2">
+                                    <label class="form-label">Title *</label>
+                                    <select class="form-select" name="title_1" required>
+                                        <option value="">Select</option>
+                                        <option value="Mr">Mr</option>
+                                        <option value="Ms">Ms</option>
+                                        <option value="Mrs">Mrs</option>
+                                        <option value="Dr">Dr</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-5">
+                                    <label class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" name="first_name_1" 
+                                           placeholder="As shown on passport" required>
+                                </div>
+                                
+                                <div class="col-md-5">
+                                    <label class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" name="last_name_1" 
+                                           placeholder="As shown on passport" required>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label class="form-label">Date of Birth *</label>
+                                    <input type="date" class="form-control" name="dob_1" required>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label class="form-label">Gender *</label>
+                                    <select class="form-select" name="gender_1" required>
+                                        <option value="">Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <label class="form-label">Nationality *</label>
+                                    <select class="form-select" name="nationality_1" required>
+                                        <option value="">Select Country</option>
+                                        <option value="US">United States</option>
+                                        <option value="UK">United Kingdom</option>
+                                        <option value="CA">Canada</option>
+                                        <option value="AU">Australia</option>
+                                        <option value="DE">Germany</option>
+                                        <option value="FR">France</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Passport Number *</label>
+                                    <input type="text" class="form-control" name="passport_1" 
+                                           placeholder="Passport number" required>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Passport Expiry *</label>
+                                    <input type="date" class="form-control" name="passport_expiry_1" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact Information -->
+                        <div class="contact-section mt-5">
+                            <h5 class="mb-3">
+                                <i class="fas fa-address-book"></i> Contact Information
+                            </h5>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Email Address *</label>
+                                    <input type="email" class="form-control" name="email" 
+                                           placeholder="your@email.com" required>
+                                    <small class="text-muted">Booking confirmation will be sent here</small>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number *</label>
+                                    <div class="input-group">
+                                        <select class="form-select" style="max-width: 100px;" name="country_code">
+                                            <option value="+1">+1 (US)</option>
+                                            <option value="+44">+44 (UK)</option>
+                                            <option value="+91">+91 (IN)</option>
+                                            <option value="+86">+86 (CN)</option>
+                                        </select>
+                                        <input type="tel" class="form-control" name="phone" 
+                                               placeholder="Phone number" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="form-label">Address</label>
+                                    <textarea class="form-control" name="address" rows="3" 
+                                              placeholder="Full address (optional)"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Special Requests -->
+                        <div class="special-requests mt-5">
+                            <h5 class="mb-3">
+                                <i class="fas fa-heart"></i> Special Requests
+                            </h5>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Meal Preference</label>
+                                    <select class="form-select" name="meal_preference">
+                                        <option value="">No preference</option>
+                                        <option value="vegetarian">Vegetarian</option>
+                                        <option value="vegan">Vegan</option>
+                                        <option value="halal">Halal</option>
+                                        <option value="kosher">Kosher</option>
+                                        <option value="gluten-free">Gluten Free</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Seat Preference</label>
+                                    <select class="form-select" name="seat_preference">
+                                        <option value="">No preference</option>
+                                        <option value="window">Window</option>
+                                        <option value="aisle">Aisle</option>
+                                        <option value="middle">Middle</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="form-label">Special Assistance</label>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       name="assistance[]" value="wheelchair" id="wheelchair">
+                                                <label class="form-check-label" for="wheelchair">
+                                                    Wheelchair assistance
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       name="assistance[]" value="blind" id="blind">
+                                                <label class="form-check-label" for="blind">
+                                                    Assistance for blind
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" 
+                                                       name="assistance[]" value="deaf" id="deaf">
+                                                <label class="form-check-label" for="deaf">
+                                                    Assistance for deaf
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-12">
+                                    <label class="form-label">Additional Notes</label>
+                                    <textarea class="form-control" name="notes" rows="3" 
+                                              placeholder="Any special requests or medical conditions..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Terms and Conditions -->
+                        <div class="terms-section mt-5">
+                            <div class="terms-card">
+                                <h6 class="mb-3">Terms and Conditions</h6>
+                                
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="terms" required>
+                                    <label class="form-check-label" for="terms">
+                                        I agree to the <a href="#" target="_blank">Terms and Conditions</a> 
+                                        and <a href="#" target="_blank">Privacy Policy</a> *
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="fare-rules" required>
+                                    <label class="form-check-label" for="fare-rules">
+                                        I understand the <a href="#" target="_blank">fare rules</a> 
+                                        and cancellation policy *
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="marketing">
+                                    <label class="form-check-label" for="marketing">
+                                        I would like to receive travel deals and updates via email
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Form Actions -->
+                        <div class="form-actions mt-5">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a href="{% url 'flights:search_results' %}" class="btn btn-outline-secondary btn-lg w-100">
+                                        <i class="fas fa-arrow-left"></i> Back to Flights
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-primary btn-lg w-100">
+                                        Continue to Seat Selection
+                                        <i class="fas fa-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Booking Summary Sidebar -->
+            <div class="col-lg-4">
+                <div class="booking-summary">
+                    <h5 class="mb-3">Booking Summary</h5>
+                    
+                    <div class="flight-details">
+                        <div class="flight-segment">
+                            <div class="segment-header">
+                                <strong>Outbound Flight</strong>
+                            </div>
+                            <div class="segment-details">
+                                <div class="airline-info">
+                                    <img src="https://via.placeholder.com/30x20/007bff/ffffff?text=BA" alt="BA" class="airline-logo-sm">
+                                    British Airways BA 112
+                                </div>
+                                <div class="route-info">
+                                    <div class="departure">
+                                        <strong>08:30</strong> JFK, New York
+                                    </div>
+                                    <div class="duration">6h 55m (Non-stop)</div>
+                                    <div class="arrival">
+                                        <strong>22:25</strong> LHR, London
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="price-breakdown">
+                        <h6>Price Breakdown</h6>
+                        <div class="breakdown-item">
+                            <span>Base Fare (1 Adult)</span>
+                            <span>$385.00</span>
+                        </div>
+                        <div class="breakdown-item">
+                            <span>Taxes & Fees</span>
+                            <span>$40.00</span>
+                        </div>
+                        <div class="breakdown-item total">
+                            <strong>Total</strong>
+                            <strong>$425.00</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="included-services">
+                        <h6>Included Services</h6>
+                        <ul class="service-list">
+                            <li><i class="fas fa-check text-success"></i> 1 x 23kg Checked Baggage</li>
+                            <li><i class="fas fa-check text-success"></i> Seat Selection</li>
+                            <li><i class="fas fa-check text-success"></i> In-flight Meal</li>
+                            <li><i class="fas fa-check text-success"></i> Entertainment System</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="help-section">
+                        <h6>Need Help?</h6>
+                        <p class="small text-muted">
+                            Our customer service team is available 24/7 to assist you.
+                        </p>
+                        <div class="contact-options">
+                            <a href="tel:+1-555-123-4567" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-phone"></i> Call Us
+                            </a>
+                            <a href="{% url 'core:contact' %}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-comments"></i> Live Chat
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.progress-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 100%;
+    width: 2rem;
+    height: 2px;
+    background: #e9ecef;
+    z-index: -1;
+}
+
+.step.active:not(:last-child)::after {
+    background: #007bff;
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #e9ecef;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.step.active .step-number {
+    background: #007bff;
+    color: white;
+}
+
+.step-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.step.active .step-label {
+    color: #007bff;
+}
+
+.summary-card {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+
+.total-price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #007bff;
+}
+
+.passenger-section {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.passenger-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.contact-section, .special-requests {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 15px;
+    padding: 2rem;
+}
+
+.terms-card {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 4px solid #007bff;
+}
+
+.booking-summary {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 20px;
+}
+
+.flight-segment {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.segment-header {
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.airline-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.airline-logo-sm {
+    width: 30px;
+    height: 20px;
+    border-radius: 3px;
+}
+
+.route-info .departure, .route-info .arrival {
+    margin-bottom: 0.5rem;
+}
+
+.duration {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+}
+
+.price-breakdown {
+    border-top: 1px solid #e9ecef;
+    padding-top: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.breakdown-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.breakdown-item.total {
+    border-top: 1px solid #e9ecef;
+    padding-top: 0.5rem;
+    margin-top: 1rem;
+}
+
+.service-list {
+    list-style: none;
+    padding: 0;
+}
+
+.service-list li {
+    padding: 0.25rem 0;
+}
+
+.help-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 1.5rem;
+}
+
+.contact-options {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+    .progress-steps {
+        gap: 1rem;
+    }
+    
+    .step-label {
+        font-size: 0.8rem;
+    }
+    
+    .passenger-section, .contact-section, .special-requests {
+        padding: 1.5rem;
+    }
+    
+    .booking-summary {
+        position: static;
+        margin-top: 2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum age for adults (18 years ago)
+    const eighteenYearsAgo = new Date();
+    eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+    document.querySelector('input[name="dob_1"]').max = eighteenYearsAgo.toISOString().split('T')[0];
+    
+    // Set minimum passport expiry (6 months from now)
+    const sixMonthsFromNow = new Date();
+    sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+    document.querySelector('input[name="passport_expiry_1"]').min = sixMonthsFromNow.toISOString().split('T')[0];
+    
+    // Form validation
+    const form = document.getElementById('passengerForm');
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        if (validateForm()) {
+            // Show loading state
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitBtn.disabled = true;
+            
+            // Simulate processing
+            setTimeout(() => {
+                window.location.href = '/bookings/seat-selection/';
+            }, 1500);
+        }
+    });
+});
+
+function validateForm() {
+    const form = document.getElementById('passengerForm');
+    const requiredFields = form.querySelectorAll('[required]');
+    let isValid = true;
+    
+    // Clear previous errors
+    document.querySelectorAll('.is-invalid').forEach(field => {
+        field.classList.remove('is-invalid');
+    });
+    
+    // Validate required fields
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            field.classList.add('is-invalid');
+            isValid = false;
+        }
+    });
+    
+    // Validate email format
+    const email = document.querySelector('input[name="email"]');
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email.value && !emailRegex.test(email.value)) {
+        email.classList.add('is-invalid');
+        isValid = false;
+    }
+    
+    // Validate passport expiry
+    const passportExpiry = document.querySelector('input[name="passport_expiry_1"]');
+    const sixMonthsFromNow = new Date();
+    sixMonthsFromNow.setMonth(sixMonthsFromNow.getMonth() + 6);
+    
+    if (passportExpiry.value && new Date(passportExpiry.value) < sixMonthsFromNow) {
+        passportExpiry.classList.add('is-invalid');
+        alert('Passport must be valid for at least 6 months from travel date');
+        isValid = false;
+    }
+    
+    if (!isValid) {
+        // Scroll to first error
+        const firstError = document.querySelector('.is-invalid');
+        if (firstError) {
+            firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }
+    
+    return isValid;
+}
+
+// Auto-format phone number
+document.querySelector('input[name="phone"]').addEventListener('input', function() {
+    // Remove non-numeric characters
+    let value = this.value.replace(/\D/g, '');
+    
+    // Format based on country code
+    const countryCode = document.querySelector('select[name="country_code"]').value;
+    
+    if (countryCode === '+1') {
+        // US format: (123) 456-7890
+        if (value.length >= 6) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3, 6)}-${value.slice(6, 10)}`;
+        } else if (value.length >= 3) {
+            value = `(${value.slice(0, 3)}) ${value.slice(3)}`;
+        }
+    }
+    
+    this.value = value;
+});
+
+// Passport number formatting
+document.querySelector('input[name="passport_1"]').addEventListener('input', function() {
+    // Convert to uppercase
+    this.value = this.value.toUpperCase();
+});
+
+// Real-time form saving (optional)
+function saveFormData() {
+    const formData = new FormData(document.getElementById('passengerForm'));
+    const data = Object.fromEntries(formData);
+    localStorage.setItem('passengerData', JSON.stringify(data));
+}
+
+// Save form data on input change
+document.getElementById('passengerForm').addEventListener('input', saveFormData);
+
+// Load saved form data on page load
+function loadSavedData() {
+    const savedData = localStorage.getItem('passengerData');
+    if (savedData) {
+        const data = JSON.parse(savedData);
+        Object.keys(data).forEach(key => {
+            const field = document.querySelector(`[name="${key}"]`);
+            if (field) {
+                field.value = data[key];
+            }
+        });
+    }
+}
+
+// Load saved data
+loadSavedData();
+</script>
+{% endblock %}

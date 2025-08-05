@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - AASEAANIC{% endblock %}
+
+{% block content %}
+<section class="auth-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="auth-card">
+                    <div class="auth-header text-center mb-4">
+                        <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+                        <h2 class="h3 fw-bold">Create Your Account</h2>
+                        <p class="text-muted">Join AASEAANIC and start your journey</p>
+                    </div>
+                    
+                    <form method="post" class="auth-form" id="signupForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="first_name" class="form-label">
+                                        <i class="fas fa-user"></i> First Name
+                                    </label>
+                                    <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="last_name" class="form-label">
+                                        <i class="fas fa-user"></i> Last Name
+                                    </label>
+                                    <input type="text" class="form-control" id="last_name" name="last_name" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="username" class="form-label">
+                                <i class="fas fa-at"></i> Username
+                            </label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                            <small class="form-text text-muted">Choose a unique username</small>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="email" class="form-label">
+                                <i class="fas fa-envelope"></i> Email Address
+                            </label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="password1" class="form-label">
+                                <i class="fas fa-lock"></i> Password
+                            </label>
+                            <div class="password-input">
+                                <input type="password" class="form-control" id="password1" name="password1" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('password1')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">Minimum 8 characters</small>
+                        </div>
+                        
+                        <div class="form-group mb-4">
+                            <label for="password2" class="form-label">
+                                <i class="fas fa-lock"></i> Confirm Password
+                            </label>
+                            <div class="password-input">
+                                <input type="password" class="form-control" id="password2" name="password2" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('password2')">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" type="checkbox" id="terms" required>
+                            <label class="form-check-label" for="terms">
+                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                            </label>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                        
+                        <div class="text-center">
+                            <p class="mb-0">Already have an account? 
+                                <a href="{% url 'authentication:login' %}" class="text-primary fw-bold">Sign In</a>
+                            </p>
+                        </div>
+                    </form>
+                    
+                    <div class="auth-divider">
+                        <span>or</span>
+                    </div>
+                    
+                    <div class="social-auth">
+                        <button class="btn btn-outline-danger w-100 mb-2">
+                            <i class="fab fa-google"></i> Continue with Google
+                        </button>
+                        <button class="btn btn-outline-primary w-100">
+                            <i class="fab fa-facebook-f"></i> Continue with Facebook
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword(fieldId) {
+    const field = document.getElementById(fieldId);
+    const toggle = field.nextElementSibling;
+    const icon = toggle.querySelector('i');
+    
+    if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Form validation
+document.getElementById('signupForm').addEventListener('submit', function(e) {
+    const password1 = document.getElementById('password1').value;
+    const password2 = document.getElementById('password2').value;
+    
+    if (password1 !== password2) {
+        e.preventDefault();
+        showAlert('Passwords do not match!', 'error');
+        return false;
+    }
+    
+    if (password1.length < 8) {
+        e.preventDefault();
+        showAlert('Password must be at least 8 characters long!', 'error');
+        return false;
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,778 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Flight Results - AASEAANIC{% endblock %}
+
+{% block content %}
+<!-- Search Summary -->
+<section class="search-summary py-3 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h5 class="mb-1">
+                    <i class="fas fa-plane me-2"></i>
+                    {{ request.GET.departure|default:"New York" }} → {{ request.GET.destination|default:"London" }}
+                </h5>
+                <p class="mb-0">
+                    <i class="fas fa-calendar me-2"></i>
+                    {{ request.GET.departure_date|default:"2025-08-06" }}
+                    {% if request.GET.return_date %}
+                        - {{ request.GET.return_date }}
+                    {% endif %}
+                    | {{ request.GET.adults|default:"1" }} Adult{% if request.GET.adults != "1" %}s{% endif %}
+                    {% if request.GET.children and request.GET.children != "0" %}, {{ request.GET.children }} Child{% if request.GET.children != "1" %}ren{% endif %}{% endif %}
+                </p>
+            </div>
+            <div class="col-lg-4 text-end">
+                <a href="{% url 'flights:search' %}" class="btn btn-outline-light btn-sm">
+                    <i class="fas fa-edit"></i> Modify Search
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filter and Sort -->
+<section class="filter-section py-3 bg-light">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-lg-3">
+                <div class="filter-card">
+                    <h6 class="fw-bold mb-3">
+                        <i class="fas fa-filter"></i> Filters
+                    </div>
+                    
+                    <!-- Price Range -->
+                    <div class="filter-group mb-4">
+                        <h6>Price Range</h6>
+                        <div class="price-range">
+                            <input type="range" class="form-range" id="priceRange" min="200" max="2000" value="1000">
+                            <div class="d-flex justify-content-between">
+                                <span>$200</span>
+                                <span id="maxPrice">$1000</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Airlines -->
+                    <div class="filter-group mb-4">
+                        <h6>Airlines</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="aa" value="AA">
+                            <label class="form-check-label" for="aa">
+                                American Airlines <span class="text-muted">(3)</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="dl" value="DL">
+                            <label class="form-check-label" for="dl">
+                                Delta Airlines <span class="text-muted">(5)</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="ua" value="UA">
+                            <label class="form-check-label" for="ua">
+                                United Airlines <span class="text-muted">(2)</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="ba" value="BA">
+                            <label class="form-check-label" for="ba">
+                                British Airways <span class="text-muted">(4)</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Stops -->
+                    <div class="filter-group mb-4">
+                        <h6>Stops</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="stops" id="nonstop" value="0">
+                            <label class="form-check-label" for="nonstop">
+                                Non-stop <span class="text-muted">+$50</span>
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="stops" id="onestop" value="1" checked>
+                            <label class="form-check-label" for="onestop">
+                                1 Stop
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="stops" id="twostop" value="2">
+                            <label class="form-check-label" for="twostop">
+                                2+ Stops <span class="text-muted">-$80</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Departure Time -->
+                    <div class="filter-group">
+                        <h6>Departure Time</h6>
+                        <div class="time-slots">
+                            <button class="btn btn-outline-primary btn-sm time-slot" data-time="morning">
+                                <i class="fas fa-sun"></i><br>
+                                Morning<br>
+                                <small>6AM - 12PM</small>
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm time-slot" data-time="afternoon">
+                                <i class="fas fa-sun"></i><br>
+                                Afternoon<br>
+                                <small>12PM - 6PM</small>
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm time-slot" data-time="evening">
+                                <i class="fas fa-moon"></i><br>
+                                Evening<br>
+                                <small>6PM - 12AM</small>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
+                <!-- Sort Options -->
+                <div class="sort-options mb-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <span class="fw-bold">14 flights found</span>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <select class="form-select d-inline-block w-auto" id="sortBy">
+                                <option value="price">Price (Low to High)</option>
+                                <option value="duration">Duration (Shortest)</option>
+                                <option value="departure">Departure Time</option>
+                                <option value="arrival">Arrival Time</option>
+                                <option value="stops">Fewest Stops</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Flight Results -->
+                <div class="flight-results">
+                    <!-- Flight 1 -->
+                    <div class="flight-card">
+                        <div class="row align-items-center">
+                            <div class="col-lg-2 text-center">
+                                <img src="https://via.placeholder.com/60x40/007bff/ffffff?text=BA" alt="British Airways" class="airline-logo">
+                                <div class="airline-name">British Airways</div>
+                                <small class="text-muted">BA 112</small>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="flight-route">
+                                    <div class="route-info">
+                                        <div class="departure">
+                                            <div class="time">08:30</div>
+                                            <div class="airport">JFK</div>
+                                            <div class="city">New York</div>
+                                        </div>
+                                        
+                                        <div class="flight-path">
+                                            <div class="duration">6h 55m</div>
+                                            <div class="path-line">
+                                                <span class="path-dot"></span>
+                                                <span class="path-connector"></span>
+                                                <span class="path-dot"></span>
+                                            </div>
+                                            <div class="stops">Non-stop</div>
+                                        </div>
+                                        
+                                        <div class="arrival">
+                                            <div class="time">22:25</div>
+                                            <div class="airport">LHR</div>
+                                            <div class="city">London</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-2 text-center">
+                                <div class="price">
+                                    <div class="amount">$425</div>
+                                    <small class="text-muted">per person</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-2 text-center">
+                                <button class="btn btn-primary btn-sm w-100 mb-2" onclick="selectFlight('BA112')">
+                                    Select Flight
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm w-100" onclick="toggleDetails('flight1')">
+                                    <i class="fas fa-chevron-down"></i> Details
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Flight Details (Hidden by default) -->
+                        <div class="flight-details" id="flight1" style="display: none;">
+                            <div class="row mt-3 pt-3 border-top">
+                                <div class="col-md-6">
+                                    <h6>Flight Details</h6>
+                                    <div class="detail-item">
+                                        <strong>Aircraft:</strong> Boeing 777-200
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Baggage:</strong> 1 x 23kg included
+                                    </div>
+                                    <div class="detail-item">
+                                        <strong>Seat:</strong> Economy Class
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Amenities</h6>
+                                    <div class="amenities">
+                                        <span class="badge bg-light text-dark me-1"><i class="fas fa-wifi"></i> WiFi</span>
+                                        <span class="badge bg-light text-dark me-1"><i class="fas fa-tv"></i> Entertainment</span>
+                                        <span class="badge bg-light text-dark me-1"><i class="fas fa-utensils"></i> Meals</span>
+                                        <span class="badge bg-light text-dark me-1"><i class="fas fa-plug"></i> Power</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Flight 2 -->
+                    <div class="flight-card">
+                        <div class="row align-items-center">
+                            <div class="col-lg-2 text-center">
+                                <img src="https://via.placeholder.com/60x40/dc3545/ffffff?text=AA" alt="American Airlines" class="airline-logo">
+                                <div class="airline-name">American Airlines</div>
+                                <small class="text-muted">AA 56</small>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="flight-route">
+                                    <div class="route-info">
+                                        <div class="departure">
+                                            <div class="time">11:15</div>
+                                            <div class="airport">JFK</div>
+                                            <div class="city">New York</div>
+                                        </div>
+                                        
+                                        <div class="flight-path">
+                                            <div class="duration">8h 25m</div>
+                                            <div class="path-line">
+                                                <span class="path-dot"></span>
+                                                <span class="path-connector"></span>
+                                                <span class="path-stop">DUB</span>
+                                                <span class="path-connector"></span>
+                                                <span class="path-dot"></span>
+                                            </div>
+                                            <div class="stops">1 Stop in Dublin</div>
+                                        </div>
+                                        
+                                        <div class="arrival">
+                                            <div class="time">04:40+1</div>
+                                            <div class="airport">LHR</div>
+                                            <div class="city">London</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-2 text-center">
+                                <div class="price">
+                                    <div class="amount">$385</div>
+                                    <small class="text-muted">per person</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-2 text-center">
+                                <button class="btn btn-primary btn-sm w-100 mb-2" onclick="selectFlight('AA56')">
+                                    Select Flight
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm w-100" onclick="toggleDetails('flight2')">
+                                    <i class="fas fa-chevron-down"></i> Details
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Flight Details -->
+                        <div class="flight-details" id="flight2" style="display: none;">
+                            <div class="row mt-3 pt-3 border-top">
+                                <div class="col-12">
+                                    <h6>Layover Information</h6>
+                                    <div class="layover-info">
+                                        <div class="layover-item">
+                                            <strong>Dublin (DUB)</strong> - 2h 15m layover
+                                            <br><small class="text-muted">Terminal change required</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Flight 3 -->
+                    <div class="flight-card recommended">
+                        <div class="recommendation-badge">
+                            <i class="fas fa-star"></i> Recommended
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-lg-2 text-center">
+                                <img src="https://via.placeholder.com/60x40/28a745/ffffff?text=DL" alt="Delta Airlines" class="airline-logo">
+                                <div class="airline-name">Delta Airlines</div>
+                                <small class="text-muted">DL 8</small>
+                            </div>
+                            
+                            <div class="col-lg-6">
+                                <div class="flight-route">
+                                    <div class="route-info">
+                                        <div class="departure">
+                                            <div class="time">14:30</div>
+                                            <div class="airport">JFK</div>
+                                            <div class="city">New York</div>
+                                        </div>
+                                        
+                                        <div class="flight-path">
+                                            <div class="duration">7h 10m</div>
+                                            <div class="path-line">
+                                                <span class="path-dot"></span>
+                                                <span class="path-connector"></span>
+                                                <span class="path-dot"></span>
+                                            </div>
+                                            <div class="stops">Non-stop</div>
+                                        </div>
+                                        
+                                        <div class="arrival">
+                                            <div class="time">06:40+1</div>
+                                            <div class="airport">LHR</div>
+                                            <div class="city">London</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-2 text-center">
+                                <div class="price">
+                                    <div class="amount">$465</div>
+                                    <small class="text-muted">per person</small>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-2 text-center">
+                                <button class="btn btn-primary btn-sm w-100 mb-2" onclick="selectFlight('DL8')">
+                                    Select Flight
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm w-100" onclick="toggleDetails('flight3')">
+                                    <i class="fas fa-chevron-down"></i> Details
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Load More -->
+                <div class="text-center mt-4">
+                    <button class="btn btn-outline-primary" onclick="loadMoreFlights()">
+                        Load More Flights
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Price Alert -->
+<section class="price-alert py-4 bg-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h5 class="mb-1">
+                    <i class="fas fa-bell me-2"></i> Set Price Alert
+                </h5>
+                <p class="mb-0">Get notified when prices drop for this route</p>
+            </div>
+            <div class="col-lg-4 text-end">
+                <button class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#priceAlertModal">
+                    <i class="fas fa-plus"></i> Create Alert
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Price Alert Modal -->
+<div class="modal fade" id="priceAlertModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Price Alert</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" placeholder="your@email.com" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Alert when price drops below</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" class="form-control" value="400" min="100">
+                        </div>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="weeklyDigest">
+                        <label class="form-check-label" for="weeklyDigest">
+                            Also send me weekly flight deals
+                        </label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Create Alert</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.filter-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    height: fit-content;
+    position: sticky;
+    top: 20px;
+}
+
+.filter-group h6 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.time-slots {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+}
+
+.time-slot {
+    padding: 0.75rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.time-slot.active {
+    background: #007bff;
+    color: white;
+}
+
+.flight-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.flight-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.flight-card.recommended {
+    border: 2px solid #ffc107;
+}
+
+.recommendation-badge {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: #ffc107;
+    color: #000;
+    padding: 0.25rem 0.75rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.airline-logo {
+    width: 60px;
+    height: 40px;
+    border-radius: 5px;
+    margin-bottom: 0.5rem;
+}
+
+.airline-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.flight-route {
+    padding: 1rem 0;
+}
+
+.route-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.departure, .arrival {
+    text-align: center;
+    flex: 1;
+}
+
+.departure .time, .arrival .time {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.departure .airport, .arrival .airport {
+    font-weight: 600;
+    color: #666;
+    margin: 0.25rem 0;
+}
+
+.departure .city, .arrival .city {
+    font-size: 0.9rem;
+    color: #999;
+}
+
+.flight-path {
+    text-align: center;
+    flex: 2;
+    padding: 0 2rem;
+}
+
+.duration {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.path-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem 0;
+}
+
+.path-dot {
+    width: 8px;
+    height: 8px;
+    background: #007bff;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.path-connector {
+    flex: 1;
+    height: 2px;
+    background: #007bff;
+    margin: 0 0.5rem;
+    position: relative;
+}
+
+.path-stop {
+    background: #ffc107;
+    color: #000;
+    padding: 0.1rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.stops {
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.price .amount {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #007bff;
+}
+
+.flight-details {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-top: 1rem;
+}
+
+.detail-item {
+    margin-bottom: 0.5rem;
+}
+
+.amenities .badge {
+    margin: 0.2rem;
+}
+
+.sort-options {
+    background: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.price-range {
+    margin-top: 1rem;
+}
+
+.layover-info {
+    background: #fff3cd;
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 4px solid #ffc107;
+}
+
+@media (max-width: 768px) {
+    .flight-card {
+        padding: 1rem;
+    }
+    
+    .route-info {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .flight-path {
+        padding: 0;
+    }
+    
+    .filter-card {
+        position: static;
+        margin-bottom: 2rem;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Flight selection
+function selectFlight(flightCode) {
+    // Store selected flight in sessionStorage
+    sessionStorage.setItem('selectedFlight', flightCode);
+    
+    // Redirect to booking page
+    window.location.href = '/bookings/passenger-details/?flight=' + flightCode;
+}
+
+// Toggle flight details
+function toggleDetails(flightId) {
+    const details = document.getElementById(flightId);
+    const button = document.querySelector(`[onclick="toggleDetails('${flightId}')"]`);
+    const icon = button.querySelector('i');
+    
+    if (details.style.display === 'none') {
+        details.style.display = 'block';
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+        button.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Details';
+    } else {
+        details.style.display = 'none';
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+        button.innerHTML = '<i class="fas fa-chevron-down"></i> Details';
+    }
+}
+
+// Price range slider
+document.getElementById('priceRange').addEventListener('input', function() {
+    document.getElementById('maxPrice').textContent = '$' + this.value;
+    filterFlights();
+});
+
+// Time slot selection
+document.querySelectorAll('.time-slot').forEach(slot => {
+    slot.addEventListener('click', function() {
+        document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('active'));
+        this.classList.add('active');
+        filterFlights();
+    });
+});
+
+// Filter flights
+function filterFlights() {
+    // Get filter values
+    const maxPrice = document.getElementById('priceRange').value;
+    const selectedAirlines = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(cb => cb.value);
+    const selectedStops = document.querySelector('input[name="stops"]:checked')?.value;
+    const selectedTime = document.querySelector('.time-slot.active')?.dataset.time;
+    
+    // Filter logic would go here
+    console.log('Filtering flights:', { maxPrice, selectedAirlines, selectedStops, selectedTime });
+    
+    // Update results count
+    updateResultsCount();
+}
+
+// Sort flights
+document.getElementById('sortBy').addEventListener('change', function() {
+    const sortBy = this.value;
+    console.log('Sorting by:', sortBy);
+    
+    // Sort logic would go here
+    sortFlights(sortBy);
+});
+
+function sortFlights(criteria) {
+    // Implementation would sort the flight cards based on criteria
+    console.log('Sorting flights by:', criteria);
+}
+
+// Load more flights
+function loadMoreFlights() {
+    const button = event.target;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    button.disabled = true;
+    
+    // Simulate loading
+    setTimeout(() => {
+        button.innerHTML = 'Load More Flights';
+        button.disabled = false;
+        
+        // Add more flight cards here
+        console.log('Loading more flights...');
+    }, 1500);
+}
+
+// Update results count
+function updateResultsCount() {
+    // This would update based on filtered results
+    document.querySelector('.fw-bold').textContent = '14 flights found';
+}
+
+// Price alert functionality
+document.querySelector('#priceAlertModal .btn-primary').addEventListener('click', function() {
+    const email = document.querySelector('#priceAlertModal input[type="email"]').value;
+    const priceLimit = document.querySelector('#priceAlertModal input[type="number"]').value;
+    
+    if (email && priceLimit) {
+        // Create price alert
+        console.log('Creating price alert:', { email, priceLimit });
+        
+        // Show success message
+        alert('Price alert created successfully!');
+        
+        // Close modal
+        bootstrap.Modal.getInstance(document.getElementById('priceAlertModal')).hide();
+    }
+});
+
+// Initialize filters
+document.addEventListener('DOMContentLoaded', function() {
+    // Set up event listeners for filter checkboxes
+    document.querySelectorAll('.filter-group input').forEach(input => {
+        input.addEventListener('change', filterFlights);
+    });
+    
+    // Initialize with current search parameters
+    filterFlights();
+});
+</script>
+{% endblock %}

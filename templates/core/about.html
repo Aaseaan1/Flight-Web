@@ -1,0 +1,346 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About Us - AASEAANIC{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero py-5 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">About AASEAANIC</h1>
+                <p class="lead mb-4">We're passionate about making travel accessible, affordable, and unforgettable for everyone. Since our founding, we've helped millions of travelers explore the world with confidence.</p>
+                <div class="d-flex gap-3">
+                    <div class="text-center">
+                        <h3 class="fw-bold">{{ total_destinations }}+</h3>
+                        <small>Destinations</small>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="fw-bold">{{ partner_airlines }}+</h3>
+                        <small>Airlines</small>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="fw-bold">{{ happy_customers|floatformat:0 }}+</h3>
+                        <small>Happy Customers</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'images/about-hero.jpg' %}" alt="About AASEAANIC" class="img-fluid rounded-3 shadow-lg">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Story -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-4">Our Story</h2>
+                <p class="lead text-muted mb-5">Founded with the vision of making travel dreams come true, AASEAANIC has grown from a small startup to a leading flight booking platform trusted by millions worldwide.</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="story-card text-center">
+                    <div class="story-icon mb-3">
+                        <i class="fas fa-lightbulb fa-3x text-primary"></i>
+                    </div>
+                    <h4>Innovation</h4>
+                    <p class="text-muted">We continuously innovate to provide the best user experience with cutting-edge technology and intuitive design.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="story-card text-center">
+                    <div class="story-icon mb-3">
+                        <i class="fas fa-heart fa-3x text-primary"></i>
+                    </div>
+                    <h4>Passion</h4>
+                    <p class="text-muted">Our team is passionate about travel and dedicated to helping you create memorable experiences around the world.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="story-card text-center">
+                    <div class="story-icon mb-3">
+                        <i class="fas fa-shield-alt fa-3x text-primary"></i>
+                    </div>
+                    <h4>Trust</h4>
+                    <p class="text-muted">We prioritize your security and privacy, ensuring every transaction is safe and your data is protected.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <div class="mission-card h-100">
+                    <div class="card-icon mb-3">
+                        <i class="fas fa-bullseye fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Our Mission</h3>
+                    <p class="text-muted">To democratize travel by providing an easy-to-use platform that connects travelers with the best flight deals, exceptional service, and unforgettable experiences.</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i> Transparent pricing with no hidden fees</li>
+                        <li><i class="fas fa-check text-success me-2"></i> 24/7 customer support</li>
+                        <li><i class="fas fa-check text-success me-2"></i> Secure and reliable booking process</li>
+                        <li><i class="fas fa-check text-success me-2"></i> Best price guarantee</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="vision-card h-100">
+                    <div class="card-icon mb-3">
+                        <i class="fas fa-eye fa-3x text-primary"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Our Vision</h3>
+                    <p class="text-muted">To become the world's most trusted and preferred travel platform, making every journey a seamless and delightful experience for travelers everywhere.</p>
+                    <div class="vision-stats">
+                        <div class="row g-3 mt-3">
+                            <div class="col-6">
+                                <div class="stat-box text-center">
+                                    <h4 class="text-primary fw-bold">99.9%</h4>
+                                    <small class="text-muted">Uptime</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-box text-center">
+                                    <h4 class="text-primary fw-bold">4.8/5</h4>
+                                    <small class="text-muted">Customer Rating</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-4">Meet Our Team</h2>
+                <p class="lead text-muted">Our diverse team of travel enthusiasts and tech experts work together to make your travel dreams a reality.</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card text-center">
+                    <div class="team-avatar mb-3">
+                        <i class="fas fa-user-tie fa-3x"></i>
+                    </div>
+                    <h5>John Anderson</h5>
+                    <p class="text-primary">CEO & Founder</p>
+                    <p class="text-muted small">Passionate traveler with 15+ years in the aviation industry.</p>
+                    <div class="team-social">
+                        <a href="#" class="text-primary me-2"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-primary me-2"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card text-center">
+                    <div class="team-avatar mb-3">
+                        <i class="fas fa-user-graduate fa-3x"></i>
+                    </div>
+                    <h5>Sarah Chen</h5>
+                    <p class="text-primary">CTO</p>
+                    <p class="text-muted small">Tech innovator focused on creating seamless user experiences.</p>
+                    <div class="team-social">
+                        <a href="#" class="text-primary me-2"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-primary me-2"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card text-center">
+                    <div class="team-avatar mb-3">
+                        <i class="fas fa-user-friends fa-3x"></i>
+                    </div>
+                    <h5>Michael Rodriguez</h5>
+                    <p class="text-primary">Head of Customer Success</p>
+                    <p class="text-muted small">Dedicated to ensuring every customer has an amazing experience.</p>
+                    <div class="team-social">
+                        <a href="#" class="text-primary me-2"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-primary me-2"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card text-center">
+                    <div class="team-avatar mb-3">
+                        <i class="fas fa-user-cog fa-3x"></i>
+                    </div>
+                    <h5>Emma Johnson</h5>
+                    <p class="text-primary">Head of Operations</p>
+                    <p class="text-muted small">Operations expert ensuring smooth flight bookings 24/7.</p>
+                    <div class="team-social">
+                        <a href="#" class="text-primary me-2"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-primary me-2"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Values Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-4">Our Core Values</h2>
+                <p class="lead text-muted">These principles guide everything we do at AASEAANIC.</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="value-card">
+                    <div class="d-flex align-items-start">
+                        <div class="value-icon me-3">
+                            <i class="fas fa-users fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5>Customer First</h5>
+                            <p class="text-muted">We put our customers at the center of everything we do, ensuring their needs and satisfaction are our top priority.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="value-card">
+                    <div class="d-flex align-items-start">
+                        <div class="value-icon me-3">
+                            <i class="fas fa-handshake fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5>Integrity</h5>
+                            <p class="text-muted">We operate with honesty, transparency, and ethical practices in all our business dealings.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="value-card">
+                    <div class="d-flex align-items-start">
+                        <div class="value-icon me-3">
+                            <i class="fas fa-rocket fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5>Innovation</h5>
+                            <p class="text-muted">We continuously innovate to improve our platform and provide cutting-edge travel solutions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="value-card">
+                    <div class="d-flex align-items-start">
+                        <div class="value-icon me-3">
+                            <i class="fas fa-globe fa-2x text-primary"></i>
+                        </div>
+                        <div>
+                            <h5>Global Reach</h5>
+                            <p class="text-muted">We strive to connect people worldwide, breaking down barriers to make travel accessible to everyone.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="display-5 fw-bold mb-4">Ready to Start Your Journey?</h2>
+                <p class="lead mb-4">Join millions of satisfied travelers who trust AASEAANIC for their flight booking needs.</p>
+                <div class="d-flex justify-content-center gap-3 flex-wrap">
+                    <a href="{% url 'flights:search' %}" class="btn btn-light btn-lg">
+                        <i class="fas fa-search"></i> Search Flights
+                    </a>
+                    <a href="{% url 'core:contact' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-envelope"></i> Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.about-hero {
+    position: relative;
+    overflow: hidden;
+}
+
+.story-card {
+    padding: 2rem;
+    transition: transform 0.3s ease;
+}
+
+.story-card:hover {
+    transform: translateY(-10px);
+}
+
+.mission-card, .vision-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.team-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+}
+
+.team-avatar {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    margin: 0 auto;
+}
+
+.value-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1rem;
+}
+
+.stat-box {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 10px;
+}
+</style>
+{% endblock %}

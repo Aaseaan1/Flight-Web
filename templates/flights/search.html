@@ -1,0 +1,566 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search Flights - AASEAANIC{% endblock %}
+
+{% block content %}
+<!-- Search Header -->
+<section class="search-header py-4 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h2 class="mb-0">
+                    <i class="fas fa-search me-2"></i> Search Flights
+                </h2>
+                <p class="mb-0">Find the perfect flight for your journey</p>
+            </div>
+            <div class="col-lg-4 text-end">
+                <a href="{% url 'core:home' %}" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Form -->
+<section class="search-form-section py-4 bg-light">
+    <div class="container">
+        <div class="search-form-card">
+            <form method="get" id="flightSearchForm" class="needs-validation" novalidate>
+                <div class="row g-3">
+                    <!-- Trip Type -->
+                    <div class="col-12">
+                        <div class="trip-type-selector">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="trip_type" id="oneWay" 
+                                       value="one_way" {% if request.GET.trip_type == 'one_way' or not request.GET.trip_type %}checked{% endif %}>
+                                <label class="form-check-label" for="oneWay">
+                                    <i class="fas fa-arrow-right"></i> One Way
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="trip_type" id="roundTrip" 
+                                       value="round_trip" {% if request.GET.trip_type == 'round_trip' %}checked{% endif %}>
+                                <label class="form-check-label" for="roundTrip">
+                                    <i class="fas fa-exchange-alt"></i> Round Trip
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="trip_type" id="multiCity" value="multi_city">
+                                <label class="form-check-label" for="multiCity">
+                                    <i class="fas fa-route"></i> Multi City
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Flight Details -->
+                    <div class="col-lg-3 col-md-6">
+                        <div class="search-field">
+                            <label class="form-label">
+                                <i class="fas fa-plane-departure text-primary"></i> From
+                            </label>
+                            <div class="input-group">
+                                <input type="text" class="form-control airport-input" name="departure" 
+                                       placeholder="Departure City" value="{{ request.GET.departure }}" required>
+                                <button class="btn btn-outline-secondary swap-btn" type="button" onclick="swapAirports()">
+                                    <i class="fas fa-exchange-alt"></i>
+                                </button>
+                            </div>
+                            <div class="invalid-feedback">Please select departure city.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-3 col-md-6">
+                        <div class="search-field">
+                            <label class="form-label">
+                                <i class="fas fa-plane-arrival text-primary"></i> To
+                            </label>
+                            <input type="text" class="form-control airport-input" name="destination" 
+                                   placeholder="Destination City" value="{{ request.GET.destination }}" required>
+                            <div class="invalid-feedback">Please select destination city.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-2 col-md-6">
+                        <div class="search-field">
+                            <label class="form-label">
+                                <i class="fas fa-calendar text-primary"></i> Departure
+                            </label>
+                            <input type="date" class="form-control" name="departure_date" 
+                                   value="{{ request.GET.departure_date }}" required>
+                            <div class="invalid-feedback">Please select departure date.</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-2 col-md-6" id="returnDateField" 
+                         style="{% if request.GET.trip_type == 'one_way' or not request.GET.trip_type %}display: none;{% endif %}">
+                        <div class="search-field">
+                            <label class="form-label">
+                                <i class="fas fa-calendar text-primary"></i> Return
+                            </label>
+                            <input type="date" class="form-control" name="return_date" 
+                                   value="{{ request.GET.return_date }}">
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-2 col-md-6">
+                        <div class="search-field">
+                            <label class="form-label">
+                                <i class="fas fa-users text-primary"></i> Passengers
+                            </label>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" 
+                                        id="passengerDropdown" data-bs-toggle="dropdown">
+                                    <span id="passengerText">{{ request.GET.passengers|default:"1 Adult" }}</span>
+                                </button>
+                                <div class="dropdown-menu p-3" style="min-width: 280px;">
+                                    <div class="passenger-selector">
+                                        <div class="passenger-type">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>Adults</strong>
+                                                    <br><small class="text-muted">12+ years</small>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changePassengerCount('adults', -1)">-</button>
+                                                    <span class="mx-3" id="adultsCount">1</span>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changePassengerCount('adults', 1)">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="passenger-type">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>Children</strong>
+                                                    <br><small class="text-muted">2-11 years</small>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changePassengerCount('children', -1)">-</button>
+                                                    <span class="mx-3" id="childrenCount">0</span>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changePassengerCount('children', 1)">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="passenger-type">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>Infants</strong>
+                                                    <br><small class="text-muted">Under 2 years</small>
+                                                </div>
+                                                <div class="d-flex align-items-center">
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changePassengerCount('infants', -1)">-</button>
+                                                    <span class="mx-3" id="infantsCount">0</span>
+                                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="changePassengerCount('infants', 1)">+</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" name="adults" id="adultsInput" value="1">
+                            <input type="hidden" name="children" id="childrenInput" value="0">
+                            <input type="hidden" name="infants" id="infantsInput" value="0">
+                        </div>
+                    </div>
+                    
+                    <!-- Class Selection -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="search-field">
+                            <label class="form-label">
+                                <i class="fas fa-chair text-primary"></i> Class
+                            </label>
+                            <select class="form-select" name="class">
+                                <option value="economy" {% if request.GET.class == 'economy' %}selected{% endif %}>Economy</option>
+                                <option value="premium" {% if request.GET.class == 'premium' %}selected{% endif %}>Premium Economy</option>
+                                <option value="business" {% if request.GET.class == 'business' %}selected{% endif %}>Business</option>
+                                <option value="first" {% if request.GET.class == 'first' %}selected{% endif %}>First Class</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- Search Button -->
+                    <div class="col-lg-2 col-md-6">
+                        <div class="search-field">
+                            <label class="form-label">&nbsp;</label>
+                            <button type="submit" class="btn btn-primary w-100 btn-lg search-btn">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Options -->
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="advanced-options">
+                            <button type="button" class="btn btn-link p-0" data-bs-toggle="collapse" data-bs-target="#advancedOptions">
+                                <i class="fas fa-sliders-h"></i> Advanced Options
+                            </button>
+                            <div class="collapse mt-3" id="advancedOptions">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Preferred Airline</label>
+                                        <select class="form-select" name="airline">
+                                            <option value="">Any Airline</option>
+                                            <option value="AA">American Airlines</option>
+                                            <option value="DL">Delta Airlines</option>
+                                            <option value="UA">United Airlines</option>
+                                            <option value="BA">British Airways</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class="form-label">Stops</label>
+                                        <select class="form-select" name="stops">
+                                            <option value="">Any</option>
+                                            <option value="0">Non-stop</option>
+                                            <option value="1">1 Stop</option>
+                                            <option value="2">2+ Stops</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check form-switch mt-4">
+                                            <input class="form-check-input" type="checkbox" name="flexible_dates" id="flexibleDates">
+                                            <label class="form-check-label" for="flexibleDates">
+                                                Flexible Dates
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="form-check form-switch mt-4">
+                                            <input class="form-check-input" type="checkbox" name="nearby_airports" id="nearbyAirports">
+                                            <label class="form-check-label" for="nearbyAirports">
+                                                Include Nearby Airports
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Popular Routes -->
+<section class="popular-routes py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-5">
+                <h3 class="fw-bold">Popular Routes</h3>
+                <p class="text-muted">Discover our most traveled destinations</p>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="route-card" onclick="fillRoute('New York', 'London')">
+                    <div class="route-info">
+                        <div class="route-cities">
+                            <strong>New York → London</strong>
+                        </div>
+                        <div class="route-price">From $425</div>
+                        <div class="route-duration">6h 55m</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="route-card" onclick="fillRoute('Los Angeles', 'Tokyo')">
+                    <div class="route-info">
+                        <div class="route-cities">
+                            <strong>Los Angeles → Tokyo</strong>
+                        </div>
+                        <div class="route-price">From $689</div>
+                        <div class="route-duration">11h 45m</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="route-card" onclick="fillRoute('Paris', 'New York')">
+                    <div class="route-info">
+                        <div class="route-cities">
+                            <strong>Paris → New York</strong>
+                        </div>
+                        <div class="route-price">From $485</div>
+                        <div class="route-duration">8h 15m</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="route-card" onclick="fillRoute('London', 'Dubai')">
+                    <div class="route-info">
+                        <div class="route-cities">
+                            <strong>London → Dubai</strong>
+                        </div>
+                        <div class="route-price">From $567</div>
+                        <div class="route-duration">7h 30m</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Tips -->
+<section class="quick-tips py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center mb-4">
+                <h4 class="fw-bold">Search Tips</h4>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="tip-item text-center">
+                    <i class="fas fa-calendar-alt fa-2x text-primary mb-3"></i>
+                    <h6>Flexible Dates</h6>
+                    <p class="text-muted small">Search flexible dates to find better deals</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="tip-item text-center">
+                    <i class="fas fa-clock fa-2x text-primary mb-3"></i>
+                    <h6>Book Early</h6>
+                    <p class="text-muted small">Book 6-8 weeks in advance for best prices</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="tip-item text-center">
+                    <i class="fas fa-map-marker-alt fa-2x text-primary mb-3"></i>
+                    <h6>Nearby Airports</h6>
+                    <p class="text-muted small">Check nearby airports for more options</p>
+                </div>
+            </div>
+            
+            <div class="col-lg-3 col-md-6">
+                <div class="tip-item text-center">
+                    <i class="fas fa-bell fa-2x text-primary mb-3"></i>
+                    <h6>Price Alerts</h6>
+                    <p class="text-muted small">Set alerts to track price changes</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.search-form-card {
+    background: white;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.trip-type-selector {
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+.search-field {
+    height: 100%;
+}
+
+.search-field label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.airport-input {
+    border-radius: 8px;
+    border: 2px solid #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.airport-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.swap-btn {
+    border-radius: 0 8px 8px 0;
+    border-left: 0;
+}
+
+.passenger-selector .passenger-type {
+    padding: 1rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.passenger-selector .passenger-type:last-child {
+    border-bottom: none;
+}
+
+.route-card {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    height: 100%;
+}
+
+.route-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    background: #f8f9fa;
+}
+
+.route-cities {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.route-price {
+    color: #007bff;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+.route-duration {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+.tip-item {
+    padding: 1rem;
+}
+
+.search-btn {
+    height: 100%;
+    min-height: 48px;
+    border-radius: 8px;
+}
+
+.advanced-options {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Set minimum dates
+    const today = new Date().toISOString().split('T')[0];
+    document.querySelector('input[name="departure_date"]').min = today;
+    document.querySelector('input[name="return_date"]').min = today;
+    
+    // Trip type handling
+    document.querySelectorAll('input[name="trip_type"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            const returnField = document.getElementById('returnDateField');
+            const returnInput = document.querySelector('input[name="return_date"]');
+            
+            if (this.value === 'round_trip') {
+                returnField.style.display = 'block';
+                returnInput.required = true;
+            } else {
+                returnField.style.display = 'none';
+                returnInput.required = false;
+            }
+        });
+    });
+    
+    // Form validation
+    document.getElementById('flightSearchForm').addEventListener('submit', function(e) {
+        if (!this.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        } else {
+            // Add loading state
+            const btn = this.querySelector('.search-btn');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Searching...';
+            btn.disabled = true;
+        }
+        this.classList.add('was-validated');
+    });
+});
+
+// Airport swap function
+function swapAirports() {
+    const departure = document.querySelector('input[name="departure"]');
+    const destination = document.querySelector('input[name="destination"]');
+    
+    const temp = departure.value;
+    departure.value = destination.value;
+    destination.value = temp;
+}
+
+// Passenger count management
+let passengerCounts = { adults: 1, children: 0, infants: 0 };
+
+function changePassengerCount(type, change) {
+    const current = passengerCounts[type];
+    const newCount = Math.max(0, current + change);
+    
+    // Validate constraints
+    if (type === 'adults' && newCount === 0) return;
+    if (type === 'infants' && newCount > passengerCounts.adults) return;
+    
+    passengerCounts[type] = newCount;
+    
+    // Update display
+    document.getElementById(type + 'Count').textContent = newCount;
+    document.getElementById(type + 'Input').value = newCount;
+    
+    updatePassengerText();
+}
+
+function updatePassengerText() {
+    const total = passengerCounts.adults + passengerCounts.children;
+    let text = '';
+    
+    if (passengerCounts.adults > 0) {
+        text += passengerCounts.adults + (passengerCounts.adults === 1 ? ' Adult' : ' Adults');
+    }
+    
+    if (passengerCounts.children > 0) {
+        if (text) text += ', ';
+        text += passengerCounts.children + (passengerCounts.children === 1 ? ' Child' : ' Children');
+    }
+    
+    if (passengerCounts.infants > 0) {
+        if (text) text += ', ';
+        text += passengerCounts.infants + (passengerCounts.infants === 1 ? ' Infant' : ' Infants');
+    }
+    
+    document.getElementById('passengerText').textContent = text;
+}
+
+// Fill popular route
+function fillRoute(departure, destination) {
+    document.querySelector('input[name="departure"]').value = departure;
+    document.querySelector('input[name="destination"]').value = destination;
+    
+    // Scroll to form
+    document.querySelector('.search-form-section').scrollIntoView({ 
+        behavior: 'smooth' 
+    });
+}
+
+// Airport autocomplete (placeholder)
+document.querySelectorAll('.airport-input').forEach(input => {
+    input.addEventListener('input', function() {
+        // TODO: Implement airport autocomplete
+        console.log('Airport search:', this.value);
+    });
+});
+</script>
+{% endblock %}
